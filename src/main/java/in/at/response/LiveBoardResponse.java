@@ -1,4 +1,6 @@
-package com.hello.domain;
+package in.at.response;
+
+import in.at.domain.Departures;
 
 public class LiveBoardResponse {
 

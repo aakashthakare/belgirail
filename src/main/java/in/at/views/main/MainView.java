@@ -1,10 +1,11 @@
-package com.hello.views.main;
+package in.at.views.main;
 
-import com.hello.domain.Departure;
-import com.hello.domain.LiveBoardResponse;
-import com.hello.domain.Station;
-import com.hello.domain.StationResponse;
-import com.hello.utils.RestUtil;
+import in.at.domain.Departure;
+import in.at.domain.Station;
+import in.at.exceptions.IRailException;
+import in.at.response.LiveBoardResponse;
+import in.at.response.StationResponse;
+import in.at.utils.IRailUtil;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -13,6 +14,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import java.util.Collections;
 
 @PageTitle("Main")
 @Route(value = "")
@@ -23,7 +26,7 @@ public class MainView extends VerticalLayout {
     private Grid<Departure> departures;
 
     public MainView() {
-        StationResponse stationResponse = RestUtil.get("https://api.irail.be/stations?format=json&lang=en", StationResponse.class);
+        StationResponse stationResponse = IRailUtil.fetchStations();
         stations = new ComboBox<>("Stations", stationResponse.getStation());
         stations.setItemLabelGenerator(Station::getStandardname);
 
@@ -38,8 +41,12 @@ public class MainView extends VerticalLayout {
         search = new Button("Search");
         search.addClickListener(e -> {
             String stationId = stations.getValue().getId();
-            LiveBoardResponse liveBoardResponse = RestUtil.get(String.format("https://api.irail.be/liveboard?station=%s&format=json&lang=en", stationId), LiveBoardResponse.class);
-            departures.setItems(liveBoardResponse.getDepartures().getDeparture());
+            try {
+                LiveBoardResponse liveBoardResponse = IRailUtil.fetchLiveBoard(stationId);
+                departures.setItems(liveBoardResponse.getDepartures().getDeparture());
+            } catch (IRailException ie) {
+                departures.setItems(Collections.emptyList());
+            }
         });
         search.addClickShortcut(Key.ENTER);
 

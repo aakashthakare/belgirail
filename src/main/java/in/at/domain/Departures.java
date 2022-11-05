@@ -1,4 +1,4 @@
-package com.hello.domain;
+package in.at.domain;
 
 import java.util.List;
 
