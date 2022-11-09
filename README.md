@@ -7,7 +7,7 @@ Interface for providing Belgium railway schedules for given station and date. It
 
 ##### How does it look?
 
-It is developed using Vaadin 23 and initial version looks as show in below screenshot.
+It is developed using `Vaadin 23` and initial version looks as show in below screenshot.
 
 ![](frontend/images/readme/app.png)
 
