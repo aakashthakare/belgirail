@@ -7,8 +7,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import in.at.domain.Station;
 import in.at.response.StationResponse;
 import in.at.utils.IRailUtil;
@@ -23,6 +23,8 @@ public class SearchLayout extends HorizontalLayout {
     private DatePicker datePicker;
 
     private Button search;
+
+    private RadioButtonGroup<String> arrivalOrDeparture;
     
     public SearchLayout() {
         StationResponse stationResponse = IRailUtil.fetchStations();
@@ -36,10 +38,16 @@ public class SearchLayout extends HorizontalLayout {
         search = new Button("Search");
         search.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
+        arrivalOrDeparture = new RadioButtonGroup<>();
+        arrivalOrDeparture.setLabel("Status");
+        arrivalOrDeparture.setItems("Arrival", "Departure");
+        arrivalOrDeparture.setValue("Departure");
+        add();
+
         search.addClickShortcut(Key.ENTER);
         HorizontalLayout searchLayout = new HorizontalLayout();
-        add(stations, datePicker, search);
-        setVerticalComponentAlignment(FlexComponent.Alignment.END, stations, search);
+        add(stations, datePicker, arrivalOrDeparture,search);
+        setVerticalComponentAlignment(Alignment.END, stations, search);
         setWidthFull();
     }
 
@@ -53,5 +61,9 @@ public class SearchLayout extends HorizontalLayout {
 
     public String getSelectedDate() {
         return datePicker.getValue().format(DateTimeFormatter.ofPattern("ddMMyy"));
+    }
+
+    public String getSelectedArrivalOrDeparture() {
+        return arrivalOrDeparture.getValue().toLowerCase();
     }
 }

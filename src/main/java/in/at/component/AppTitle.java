@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class AppTitle extends HorizontalLayout {
     
     public AppTitle() {
-        Span titleSpan = new Span("Belgium IRail");
+        Span titleSpan = new Span("BelgIRail");
         titleSpan.setClassName("app-title");
 
         Icon icon = VaadinIcon.TRAIN.create();

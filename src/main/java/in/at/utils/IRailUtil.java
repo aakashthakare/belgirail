@@ -17,8 +17,8 @@ public final class IRailUtil {
         return get("/stations?format=json&lang=en", StationResponse.class);
     }
 
-    public static LiveBoardResponse fetchLiveBoard(String stationId, String date) {
-        return get(String.format("/liveboard?id=%s&format=json&lang=en&date=%s", stationId, date), LiveBoardResponse .class);
+    public static LiveBoardResponse fetchLiveBoard(String stationId, String date, String arrdep) {
+        return get(String.format("/liveboard?id=%s&format=json&lang=en&date=%s&arrdep=%s", stationId, date, arrdep), LiveBoardResponse .class);
     }
 
     private static <T> T get(String uri, Class<T> response) {

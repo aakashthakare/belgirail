@@ -2,16 +2,16 @@ package in.at.views;
 
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import in.at.component.AppTitle;
-import in.at.component.LiveBoardGrid;
-import in.at.component.SearchLayout;
-import in.at.domain.Departure;
-import in.at.exceptions.IRailException;
-import in.at.response.LiveBoardResponse;
-import in.at.utils.IRailUtil;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import in.at.component.AppTitle;
+import in.at.component.LiveBoardGrid;
+import in.at.component.SearchLayout;
+import in.at.domain.TrainAction;
+import in.at.exceptions.IRailException;
+import in.at.response.LiveBoardResponse;
+import in.at.utils.IRailUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,11 +44,19 @@ public class MainView extends VerticalLayout {
     private void addSearchClickListener() {
         searchLayout.addSeachClickListener(e -> {
             String stationId = searchLayout.getSelectedStationId();
-            List<Departure> departureList = Collections.emptyList();
+            List<? extends TrainAction> departureList = Collections.emptyList();
             try {
                 String date = searchLayout.getSelectedDate();
-                LiveBoardResponse liveBoardResponse = IRailUtil.fetchLiveBoard(stationId, date);
-                departureList = liveBoardResponse.getDepartures().getDeparture();
+                String arrivalOrDeparture = searchLayout.getSelectedArrivalOrDeparture();
+                LiveBoardResponse liveBoardResponse = IRailUtil.fetchLiveBoard(stationId, date, arrivalOrDeparture);
+
+                boolean isArrival = "arrival".equalsIgnoreCase(arrivalOrDeparture);
+                if(isArrival) {
+                    departureList = liveBoardResponse.getArrivals().getArrival();
+                } else {
+                    departureList = liveBoardResponse.getDepartures().getDeparture();
+                }
+
                 liveBoardGrid.setItems(departureList);
             } catch (IRailException ie) {
                 ie.printStackTrace();
@@ -56,7 +64,7 @@ public class MainView extends VerticalLayout {
 
             liveBoardGrid.setVisible(!departureList.isEmpty());
             if(departureList.isEmpty()) {
-                Notification notification = new Notification("No departures found for the station on given date.", 3000, Notification.Position.BOTTOM_START);
+                Notification notification = new Notification("No data found.", 3000, Notification.Position.TOP_CENTER);
                 notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
                 notification.open();
             }
