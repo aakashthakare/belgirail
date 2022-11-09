@@ -4,9 +4,11 @@ public class Departure {
 
     private String id;
 
-    private String delay;
+    private int delay;
 
     private String station;
+
+    private String vehicle;
 
     private String platform;
 
@@ -24,11 +26,11 @@ public class Departure {
         this.id = id;
     }
 
-    public String getDelay() {
+    public int getDelay() {
         return delay;
     }
 
-    public void setDelay(String delay) {
+    public void setDelay(int delay) {
         this.delay = delay;
     }
 
@@ -38,6 +40,14 @@ public class Departure {
 
     public void setStation(String station) {
         this.station = station;
+    }
+
+    public String getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(String vehicle) {
+        this.vehicle = vehicle;
     }
 
     public String getPlatform() {

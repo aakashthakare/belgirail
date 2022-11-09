@@ -16,10 +16,4 @@ public class StationResponse {
         this.station = station;
     }
 
-    @Override
-    public String toString() {
-        return "StationResponse{" +
-                "stations=" + station +
-                '}';
-    }
 }

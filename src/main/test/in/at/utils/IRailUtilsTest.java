@@ -24,14 +24,15 @@ public class IRailUtilsTest {
     @Test
     public void shouldDisplayLiveBoardOfAStation() {
         String stationId = "BE.NMBS.007015400";
-        LiveBoardResponse liveBoardResponse = IRailUtil.fetchLiveBoard(stationId);
+        String date = "";
+        LiveBoardResponse liveBoardResponse = IRailUtil.fetchLiveBoard(stationId, date);
         assertNotNull(liveBoardResponse);
     }
 
     @Test
     public void shouldFailToShowLiveBoardOfAnInvalidStation() {
         try {
-            IRailUtil.fetchLiveBoard("INVALID");
+            IRailUtil.fetchLiveBoard("INVALID", "123456");
             fail("No error returned.");
         } catch (IRailException e) {
             assertEquals(404, e.getErrorResponse().getError());
