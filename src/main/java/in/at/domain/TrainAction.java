@@ -20,6 +20,8 @@ public abstract class TrainAction {
 
     private VehicleInfo vehicleinfo;
 
+    private StationInfo stationinfo;
+
     public String getId() {
         return id;
     }
@@ -90,5 +92,13 @@ public abstract class TrainAction {
 
     public void setVehicleinfo(VehicleInfo vehicleinfo) {
         this.vehicleinfo = vehicleinfo;
+    }
+
+    public StationInfo getStationinfo() {
+        return stationinfo;
+    }
+
+    public void setStationinfo(StationInfo stationinfo) {
+        this.stationinfo = stationinfo;
     }
 }

@@ -2,10 +2,13 @@ package in.at.component;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import in.at.domain.StationInfo;
 import in.at.domain.TrainAction;
 
 import java.time.Instant;
@@ -22,12 +25,17 @@ public class LiveBoardGrid extends Grid<TrainAction> {
         addComponentColumn(d -> createPlatformTag(d.getPlatform())).setHeader(createGridHeader("", VaadinIcon.GROUP)).setAutoWidth(true).setFlexGrow(0);
         addComponentColumn(d -> createTimeTag(formattedDateFromMillis(d.getTime()), d.getDelay())).setHeader(createGridHeader("", VaadinIcon.CLOCK)).setAutoWidth(true).setFlexGrow(0);
         addComponentColumn(d -> createTrainTag(d.getVehicleinfo().getShortname())).setHeader(createGridHeader("Train", VaadinIcon.TRAIN)).setAutoWidth(true).setFlexGrow(0);
-        addColumn(TrainAction::getStation).setHeader(createStationHeader());
+        addComponentColumn(d -> createStationWithMapLink(d.getStationinfo())).setHeader(createStationHeader());
 
         setSizeFull();
         setVisible(false);
         addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS);
         setSelectionMode(SelectionMode.NONE);
+    }
+
+    private Anchor createStationWithMapLink(StationInfo stationinfo) {
+        String link = String.format("https://www.google.com/maps/search/?api=1&query=%s,%s", stationinfo.getLocationY(), stationinfo.getLocationX());
+        return new Anchor(link, stationinfo.getStandardname(), AnchorTarget.BLANK);
     }
 
     private Icon delayRenderer(boolean isDelayed) {
