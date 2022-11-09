@@ -1,6 +1,6 @@
 ## BelgIRail
 
-Live dashboard of Belgium trains by using [IRail](https://github.com/iRail) open transport data.
+Belgium railway schedules with the help of [IRail](https://github.com/iRail).
 
 ![](frontend/images/readme/app.png)
 
