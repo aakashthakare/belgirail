@@ -6,16 +6,15 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import in.at.domain.Arrival;
-import in.at.domain.Departure;
 import in.at.domain.TrainAction;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
-public class LiveBoardGrid<T extends TrainAction> extends Grid<T> {
+public class LiveBoardGrid extends Grid<TrainAction> {
+
+    private Span stationTitleSpan;
 
     public LiveBoardGrid() {
         addComponentColumn(d -> cancellationRenderer(d.getCanceled() > 0)).setAutoWidth(true).setFlexGrow(0);
@@ -23,15 +22,16 @@ public class LiveBoardGrid<T extends TrainAction> extends Grid<T> {
         addComponentColumn(d -> createPlatformTag(d.getPlatform())).setHeader(createGridHeader("", VaadinIcon.GROUP)).setAutoWidth(true).setFlexGrow(0);
         addComponentColumn(d -> createTimeTag(formattedDateFromMillis(d.getTime()), d.getDelay())).setHeader(createGridHeader("", VaadinIcon.CLOCK)).setAutoWidth(true).setFlexGrow(0);
         addComponentColumn(d -> createTrainTag(d.getVehicleinfo().getShortname())).setHeader(createGridHeader("Train", VaadinIcon.TRAIN)).setAutoWidth(true).setFlexGrow(0);
-        addColumn(TrainAction::getStation).setHeader(createGridHeader("Station", VaadinIcon.BUILDING));
+        addColumn(TrainAction::getStation).setHeader(createStationHeader());
 
         setSizeFull();
         setVisible(false);
-        addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
+        addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS);
+        setSelectionMode(SelectionMode.NONE);
     }
 
     private Icon delayRenderer(boolean isDelayed) {
-        Icon icon = null;
+        Icon icon;
 
         if(isDelayed) {
             icon = cellIcon(VaadinIcon.TIME_BACKWARD, "red");
@@ -45,7 +45,7 @@ public class LiveBoardGrid<T extends TrainAction> extends Grid<T> {
     }
 
     private Icon cancellationRenderer(boolean isCancelled) {
-        Icon icon = null;
+        Icon icon;
 
         if(isCancelled) {
             icon = cellIcon(VaadinIcon.WARNING, "red");
@@ -69,6 +69,7 @@ public class LiveBoardGrid<T extends TrainAction> extends Grid<T> {
         Span span = new Span();
         String theme = String.format("badge %s", ("?".equals(platform)) ? "error" : "success");
         span.getElement().setAttribute("theme", theme);
+        span.getElement().setAttribute("title", "Platform number");
         span.setText(platform);
         return span;
     }
@@ -98,15 +99,24 @@ public class LiveBoardGrid<T extends TrainAction> extends Grid<T> {
         return layout;
     }
 
+    private HorizontalLayout createStationHeader() {
+        stationTitleSpan = new Span();
+        Icon icon = VaadinIcon.BUILDING.create();
+
+        HorizontalLayout layout = new HorizontalLayout(icon, stationTitleSpan);
+        layout.setSpacing(true);
+        return layout;
+    }
+
     private String formattedDateFromMillis(Long dateInMillis) {
         return DateTimeFormatter.ofPattern("HH:mm").format(Instant.ofEpochMilli(dateInMillis).atZone(ZoneId.of("UTC+1")));
     }
 
-    public void setDepartures(List<Departure> departures) {
-
-    }
-
-    public void setArrivals(List<Arrival> arrivals) {
-
+    public void changeStationTitle(boolean isArrivals) {
+        if(isArrivals) {
+            stationTitleSpan.setText("Arriving from station");
+        } else {
+            stationTitleSpan.setText("Departing for station");
+        }
     }
 }

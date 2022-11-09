@@ -13,21 +13,19 @@ import in.at.exceptions.IRailException;
 import in.at.response.LiveBoardResponse;
 import in.at.utils.IRailUtil;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Main")
 @Route(value = "")
 public class MainView extends VerticalLayout {
 
-    private AppTitle appTitle;
+    private final SearchLayout searchLayout;
 
-    private SearchLayout searchLayout;
-
-    private LiveBoardGrid liveBoardGrid;
+    private final LiveBoardGrid liveBoardGrid;
 
     public MainView() {
-        appTitle = new AppTitle();
+        AppTitle appTitle = new AppTitle();
         searchLayout = new SearchLayout();
         liveBoardGrid = new LiveBoardGrid();
 
@@ -44,7 +42,7 @@ public class MainView extends VerticalLayout {
     private void addSearchClickListener() {
         searchLayout.addSeachClickListener(e -> {
             String stationId = searchLayout.getSelectedStationId();
-            List<? extends TrainAction> departureList = Collections.emptyList();
+            List<TrainAction> departureList = new ArrayList<>();
             try {
                 String date = searchLayout.getSelectedDate();
                 String arrivalOrDeparture = searchLayout.getSelectedArrivalOrDeparture();
@@ -52,11 +50,12 @@ public class MainView extends VerticalLayout {
 
                 boolean isArrival = "arrival".equalsIgnoreCase(arrivalOrDeparture);
                 if(isArrival) {
-                    departureList = liveBoardResponse.getArrivals().getArrival();
+                    departureList.addAll(liveBoardResponse.getArrivals().getArrival());
                 } else {
-                    departureList = liveBoardResponse.getDepartures().getDeparture();
+                    departureList.addAll(liveBoardResponse.getDepartures().getDeparture());
                 }
 
+                liveBoardGrid.changeStationTitle(isArrival);
                 liveBoardGrid.setItems(departureList);
             } catch (IRailException ie) {
                 ie.printStackTrace();

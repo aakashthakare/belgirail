@@ -18,13 +18,13 @@ import java.time.format.DateTimeFormatter;
 
 public class SearchLayout extends HorizontalLayout {
 
-    private ComboBox<Station> stations;
+    private final ComboBox<Station> stations;
 
-    private DatePicker datePicker;
+    private final DatePicker datePicker;
 
-    private Button search;
+    private final Button search;
 
-    private RadioButtonGroup<String> arrivalOrDeparture;
+    private final RadioButtonGroup<String> arrivalOrDeparture;
     
     public SearchLayout() {
         StationResponse stationResponse = IRailUtil.fetchStations();
@@ -39,14 +39,14 @@ public class SearchLayout extends HorizontalLayout {
         search.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         arrivalOrDeparture = new RadioButtonGroup<>();
-        arrivalOrDeparture.setLabel("Status");
+        arrivalOrDeparture.setLabel("Expect");
         arrivalOrDeparture.setItems("Arrival", "Departure");
         arrivalOrDeparture.setValue("Departure");
         add();
 
         search.addClickShortcut(Key.ENTER);
         HorizontalLayout searchLayout = new HorizontalLayout();
-        add(stations, datePicker, arrivalOrDeparture,search);
+        add(stations, datePicker, arrivalOrDeparture, search);
         setVerticalComponentAlignment(Alignment.END, stations, search);
         setWidthFull();
     }
